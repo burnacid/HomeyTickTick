@@ -1,0 +1,47 @@
+{
+  "actions": [
+    {
+      "id": "create-inbox-task",
+      "title": {
+        "en": "Create Inbox Task"
+      },
+      "hint": {
+        "en": "Creates a task in your inbox"
+      },
+      "args": [
+        {
+          "type": "text",
+          "name": "Title",
+          "placeholder": {
+            "en": "Some title for your task"
+          }
+        }
+      ]
+    } // ,
+    // {
+    //   "id": "create-inbox-task-with-start-date",
+    //   "title": {
+    //     "en": "Create Inbox Task With Start Date"
+    //   },
+    //   "hint": {
+    //     "en": "Creates a task in your inbox with a start date"
+    //   },
+    //   "args": [
+    //     {
+    //       "type": "text",
+    //       "name": "Title",
+    //       "placeholder": {
+    //         "en": "Some title for your task"
+    //       }
+    //     },
+    //     {
+    //       "type": "date",
+    //       "name": "Date",
+    //       "placeholder": {
+    //         "en": "Start Date for your task"
+    //       }
+    //     }
+    //   ]
+    // }
+  ]
+}
