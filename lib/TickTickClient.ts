@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { TickTickProfile } from './models/TickTickProfile';
+import { TickTickProject } from './models/TickTickProject';
 import { TickTickTask } from './models/TickTickTask';
 import { TickTickLogin } from './models/TickTickUser';
 axios.defaults.withCredentials = true;
@@ -36,6 +37,17 @@ export class TickTickClient {
         });
 
         return <TickTickProfile> result.data;
+    }
+
+    public async getProjects(): Promise<TickTickProject[]> {
+      const url = "https://api.ticktick.com/api/v2/projects";
+      const result = await axios.get(url, {
+        headers: {
+          Cookie: this.cookieHeader,
+        },
+      });
+
+      return <TickTickProject[]> result.data;
     }
 
     public async createTask(task: TickTickTask): Promise<any> {

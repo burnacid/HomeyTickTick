@@ -5,6 +5,7 @@ import ObjectID from 'bson-objectid';
 
 import { TickTickTask } from '../../lib/models/TickTickTask';
 import { TickTickClient } from '../../lib/TickTickClient';
+import { ArgumentAutocompleteResults } from 'homey/lib/FlowCard';
 
 class TickTickUserDriver extends Homey.Driver {
 
@@ -15,8 +16,8 @@ class TickTickUserDriver extends Homey.Driver {
    */
   async onInit() {
     this.log('TickTickUserDriver has been initialized');
-    this.registerCreateInboxTaskAction();
-    // this.registerCreateInboxTaskWithStartDateAction();
+    this.registerCreateTaskAction();
+    // this.registerCreateTaskWithStartDateAction();
   }
 
   async onPair(session: PairSession) {
@@ -51,8 +52,8 @@ class TickTickUserDriver extends Homey.Driver {
     });
   }
 
-  registerCreateInboxTaskAction() {
-    const createSimpleTask = this.homey.flow.getActionCard('create-inbox-task');
+  registerCreateTaskAction() {
+    const createSimpleTask = this.homey.flow.getActionCard('create-task');
     createSimpleTask.registerRunListener(async (args, state) => {
       const ttUser = args.device.getData();
       await this.client.login(ttUser.username, ttUser.password);
@@ -81,10 +82,24 @@ class TickTickUserDriver extends Homey.Driver {
       }
       await this.client.createTask(task);
     });
+
+    createSimpleTask.registerArgumentAutocompleteListener('project', async (query, args) => {
+      const ttUser = args.device.getData();
+      await this.client.login(ttUser.username, ttUser.password);
+      const projects = await this.client.getProjects();
+      this.log(projects);
+      const results: ArgumentAutocompleteResults =
+        [{
+          name: "Inbox",
+          description: "Inbox",
+          id: ttUser.inboxId
+        }]
+      return results;
+    });
   }
 
-  // registerCreateInboxTaskWithStartDateAction() {
-  //   const createSimpleTask = this.homey.flow.getActionCard('create-inbox-task-with-start-date');
+  // registerCreateTaskWithStartDateAction() {
+  //   const createSimpleTask = this.homey.flow.getActionCard('create-task-with-start-date');
   //   createSimpleTask.registerRunListener(async (args, state) => {
   //     const ttUser = args.device.getData();
   //     await this.client.login(ttUser.username, ttUser.password);

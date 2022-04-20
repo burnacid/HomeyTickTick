@@ -13,8 +13,29 @@
     "en": "Adds support for TickTick accounts."
   },
   "category": [
-    "internet"
+    "internet",
+    "tools"
   ],
+  "tags": {
+    "en": [
+      "todo",
+      "todo list",
+      "tasks",
+      "task list"
+    ],
+    "nl": [
+      "todo",
+      "todo lijst",
+      "taken",
+      "taken lijst"
+    ]
+  },
+  "brandColor": "#4772fa",
+  "homepage": "https://ticktick.com/",
+  "source": "https://github.com/StefanIndustries/HomeyTickTick",
+  "bugs": {
+    "url": "https://github.com/StefanIndustries/HomeyTickTick/issues"
+  },
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
@@ -24,5 +45,13 @@
   "author": {
     "name": "Stefan Simon",
     "email": "sjsimon1996@gmail.com"
+  },
+  "support": "mailto:sjsimon1996@gmail.com",
+  "contributing": {
+    "donate": {
+      "bunq": {
+        "username": "StefanJSimon"
+      }
+    }
   }
 }
