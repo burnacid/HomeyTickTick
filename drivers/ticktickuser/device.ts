@@ -1,11 +1,18 @@
 import Homey from 'homey';
+import { TickTickClient } from '../../lib/TickTickClient';
 
 class TickTickUserDevice extends Homey.Device {
+
+  public client!: TickTickClient;
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
+    const data = this.getData();
+    if (data) {
+      this.client = new TickTickClient(data.username, data.password);
+    }
     this.log('TickTickUserDevice has been initialized');
   }
 

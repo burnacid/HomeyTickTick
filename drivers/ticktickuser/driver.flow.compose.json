@@ -28,46 +28,12 @@
       ]
     },
     {
-      "id": "create-task-with-start-date",
+      "id": "create-task-with-due-date-today",
       "title": {
-        "en": "Create Task With Start Date"
+        "en": "Create Task with due date today"
       },
       "hint": {
-        "en": "Creates a task with a start date"
-      },
-      "args": [
-        {
-          "type": "text",
-          "name": "Title",
-          "title": { "en": "Title" },
-          "placeholder": {
-            "en": "Some title for your task"
-          }
-        },
-        {
-          "type": "autocomplete",
-          "name": "project",
-          "title": { "en": "List" },
-          "placeholder": {
-            "en": "Inbox or other list"
-          }
-        },
-        {
-          "type": "date",
-          "name": "Date",
-          "placeholder": {
-            "en": "Start Date for your task"
-          }
-        }
-      ]
-    },
-    {
-      "id": "create-task-with-start-date-today",
-      "title": {
-        "en": "Create Task With Start Date Today"
-      },
-      "hint": {
-        "en": "Creates a task with a start date of today"
+        "en": "Creates a task with due date today"
       },
       "args": [
         {

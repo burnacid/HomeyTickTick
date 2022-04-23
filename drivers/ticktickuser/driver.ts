@@ -8,9 +8,6 @@ import { TickTickClient } from '../../lib/TickTickClient';
 import { ArgumentAutocompleteResults } from 'homey/lib/FlowCard';
 
 class TickTickUserDriver extends Homey.Driver {
-
-  client = new TickTickClient();
-
   /**
    * onInit is called when the driver is initialized.
    */
@@ -21,15 +18,16 @@ class TickTickUserDriver extends Homey.Driver {
   }
 
   async onPair(session: PairSession) {
-    const client = new TickTickClient();
     let username = '';
     let password = '';
+    let client: TickTickClient;
     let inboxId = '';
 
     session.setHandler('login', async (data: any) => {
       username = data.username.toLowerCase().trim();
       password = data.password;
-      const tickTickUser = await client.login(username, password);
+      client = new TickTickClient(username, password);
+      const tickTickUser = await client.login();
 
       inboxId = tickTickUser.inboxId;
 
@@ -56,7 +54,7 @@ class TickTickUserDriver extends Homey.Driver {
     const createSimpleTask = this.homey.flow.getActionCard('create-task');
     createSimpleTask.registerRunListener(async (args, state) => {
       const ttUser = args.device.getData();
-      await this.client.login(ttUser.username, ttUser.password);
+      const ttClient = <TickTickClient> args.device.client;
       const currentDateTimeJson = JSON.stringify(new Date());
       const task: TickTickTask = {
         id: ObjectID(),
@@ -68,7 +66,7 @@ class TickTickUserDriver extends Homey.Driver {
         status: 0,
         startDate: null,
         reminders: [],
-        projectId: ttUser.inboxId,
+        projectId: args.project.id,
         progress: 0,
         kind: null,
         items: [],
@@ -80,22 +78,26 @@ class TickTickUserDriver extends Homey.Driver {
         sortOrder: -205058918580224,
         tags: []
       }
-      await this.client.createTask(task);
+      await ttClient.createTask(task);
     });
 
     createSimpleTask.registerArgumentAutocompleteListener('project', async (query, args) => {
       const ttUser = args.device.getData();
-      await this.client.login(ttUser.username, ttUser.password);
-      const projects = await this.client.getProjects();
-      this.log(projects);
-      const results: ArgumentAutocompleteResults =
-        [{
+      const ttClient = <TickTickClient> args.device.client;
+      const projects = await ttClient.getProjects();
+      const results: ArgumentAutocompleteResults = [
+        {
           name: "Inbox",
-          description: "Inbox",
           id: ttUser.inboxId
-        }]
+        }, 
+        ...projects.map(project => ({name: project.name, id: project.id}))
+      ];
       return results;
     });
+  }
+
+  registerCreateTaskWithDueDateTodayAction() {
+
   }
 
   // registerCreateTaskWithStartDateAction() {
