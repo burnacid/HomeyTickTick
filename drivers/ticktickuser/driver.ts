@@ -58,7 +58,7 @@ class TickTickUserDriver extends Homey.Driver {
       const ttClient = <TickTickClient> args.device.client;
       const task: TickTickTask = {
         id: ObjectID(),
-        title: args.Title,
+        title: args.title,
         createdTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
         modifiedTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
         timeZone: this.homey.clock.getTimezone(),
@@ -107,7 +107,7 @@ class TickTickUserDriver extends Homey.Driver {
       const ttClient = <TickTickClient> args.device.client;
       const task: TickTickTask = {
         id: ObjectID(),
-        title: args.Title,
+        title: args.title,
         createdTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
         modifiedTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
         timeZone: this.homey.clock.getTimezone(),
