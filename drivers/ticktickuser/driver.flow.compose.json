@@ -28,12 +28,12 @@
       ]
     },
     {
-      "id": "create-task-with-due-date-today",
+      "id": "create-task-with-start-date-today",
       "title": {
-        "en": "Create Task with due date today"
+        "en": "Create Task with start date today"
       },
       "hint": {
-        "en": "Creates a task with due date today"
+        "en": "Creates a task with start date today"
       },
       "args": [
         {

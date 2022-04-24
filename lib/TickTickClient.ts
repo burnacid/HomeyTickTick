@@ -54,6 +54,7 @@ export class TickTickClient {
   }
 
   public async createTask(task: TickTickTask): Promise<any> {
+    console.log(task);
     const url = "batch/task";
     const body = {
       add: [

@@ -6,6 +6,7 @@ import ObjectID from 'bson-objectid';
 import { TickTickTask } from '../../lib/models/TickTickTask';
 import { TickTickClient } from '../../lib/TickTickClient';
 import { ArgumentAutocompleteResults } from 'homey/lib/FlowCard';
+import { TickTickModelHelpers } from '../../lib/TickTickModelHelpers';
 
 class TickTickUserDriver extends Homey.Driver {
   /**
@@ -14,7 +15,7 @@ class TickTickUserDriver extends Homey.Driver {
   async onInit() {
     this.log('TickTickUserDriver has been initialized');
     this.registerCreateTaskAction();
-    // this.registerCreateTaskWithStartDateAction();
+    this.registerCreateTaskWithStartDateTodayAction();
   }
 
   async onPair(session: PairSession) {
@@ -55,12 +56,11 @@ class TickTickUserDriver extends Homey.Driver {
     createSimpleTask.registerRunListener(async (args, state) => {
       const ttUser = args.device.getData();
       const ttClient = <TickTickClient> args.device.client;
-      const currentDateTimeJson = JSON.stringify(new Date());
       const task: TickTickTask = {
         id: ObjectID(),
         title: args.Title,
-        createdTime: currentDateTimeJson,
-        modifiedTime: currentDateTimeJson,
+        createdTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
+        modifiedTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
         timeZone: this.homey.clock.getTimezone(),
         priority: 0,
         status: 0,
@@ -82,56 +82,58 @@ class TickTickUserDriver extends Homey.Driver {
     });
 
     createSimpleTask.registerArgumentAutocompleteListener('project', async (query, args) => {
-      const ttUser = args.device.getData();
-      const ttClient = <TickTickClient> args.device.client;
-      const projects = await ttClient.getProjects();
-      const results: ArgumentAutocompleteResults = [
-        {
-          name: "Inbox",
-          id: ttUser.inboxId
-        }, 
-        ...projects.map(project => ({name: project.name, id: project.id}))
-      ];
-      return results;
+      return await this.getProjectArgumentAutocompleteResults(query, args);
     });
   }
 
-  registerCreateTaskWithDueDateTodayAction() {
-
+  async getProjectArgumentAutocompleteResults(query: string, args: any): Promise<Homey.FlowCard.ArgumentAutocompleteResults> {
+    const ttUser = args.device.getData();
+    const ttClient = <TickTickClient> args.device.client;
+    const projects = await ttClient.getProjects();
+    const results: ArgumentAutocompleteResults = [
+      {
+        name: "Inbox",
+        id: ttUser.inboxId
+      }, 
+      ...projects.map(project => ({name: project.name, id: project.id}))
+    ];
+    return results;
   }
 
-  // registerCreateTaskWithStartDateAction() {
-  //   const createSimpleTask = this.homey.flow.getActionCard('create-task-with-start-date');
-  //   createSimpleTask.registerRunListener(async (args, state) => {
-  //     const ttUser = args.device.getData();
-  //     await this.client.login(ttUser.username, ttUser.password);
-  //     const currentDateTimeJson = JSON.stringify(new Date());
-  //     const task: TickTickTask = {
-  //       id: ObjectID(),
-  //       title: args.Title,
-  //       createdTime: currentDateTimeJson,
-  //       modifiedTime: currentDateTimeJson,
-  //       timeZone: this.homey.clock.getTimezone(),
-  //       priority: 0,
-  //       status: 0,
-  //       startDate: JSON.stringify(args.Date),
-  //       reminders: [],
-  //       projectId: ttUser.inboxId,
-  //       progress: 0,
-  //       kind: null,
-  //       items: [],
-  //       isFloating: false,
-  //       exDate: [],
-  //       dueDate: null,
-  //       content: "",
-  //       assignee: null,
-  //       sortOrder: -205058918580224,
-  //       tags: []
-  //     }
-  //     await this.client.createTask(task);
-  //   });
-  // }
+  registerCreateTaskWithStartDateTodayAction() {
+    const createTaskWithDueDateToday = this.homey.flow.getActionCard('create-task-with-start-date-today');
+    createTaskWithDueDateToday.registerRunListener(async (args, state) => {
+      const ttUser = args.device.getData();
+      const ttClient = <TickTickClient> args.device.client;
+      const task: TickTickTask = {
+        id: ObjectID(),
+        title: args.Title,
+        createdTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
+        modifiedTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
+        timeZone: this.homey.clock.getTimezone(),
+        priority: 0,
+        status: 0,
+        startDate: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
+        reminders: [],
+        projectId: args.project.id,
+        progress: 0,
+        kind: null,
+        items: [],
+        isFloating: false,
+        exDate: [],
+        dueDate: null,
+        content: "",
+        assignee: null,
+        sortOrder: -205058918580224,
+        tags: []
+      }
+      await ttClient.createTask(task);
+    });
 
+    createTaskWithDueDateToday.registerArgumentAutocompleteListener('project', async (query, args) => {
+      return await this.getProjectArgumentAutocompleteResults(query, args);
+    });
+  }
 }
 
 module.exports = TickTickUserDriver;

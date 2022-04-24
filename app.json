@@ -94,55 +94,12 @@
         ]
       },
       {
-        "id": "create-task-with-start-date",
-        "title": {
-          "en": "Create Task With Start Date"
-        },
-        "hint": {
-          "en": "Creates a task with a start date"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=ticktickuser"
-          },
-          {
-            "type": "text",
-            "name": "Title",
-            "title": {
-              "en": "Title"
-            },
-            "placeholder": {
-              "en": "Some title for your task"
-            }
-          },
-          {
-            "type": "autocomplete",
-            "name": "project",
-            "title": {
-              "en": "List"
-            },
-            "placeholder": {
-              "en": "Inbox or other list"
-            }
-          },
-          {
-            "type": "date",
-            "name": "Date",
-            "placeholder": {
-              "en": "Start Date for your task"
-            }
-          }
-        ]
-      },
-      {
         "id": "create-task-with-start-date-today",
         "title": {
-          "en": "Create Task With Start Date Today"
+          "en": "Create Task with start date today"
         },
         "hint": {
-          "en": "Creates a task with a start date of today"
+          "en": "Creates a task with start date today"
         },
         "args": [
           {
