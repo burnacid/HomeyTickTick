@@ -1,6 +1,6 @@
 {
   "id": "com.ticktick",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -10,7 +10,7 @@
     "en": "TickTick"
   },
   "description": {
-    "en": "Adds support for TickTick accounts."
+    "en": "Automate your todo list for the tasks Homey cannot do for you."
   },
   "category": [
     "internet",
