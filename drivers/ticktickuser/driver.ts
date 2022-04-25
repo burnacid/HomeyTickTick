@@ -7,6 +7,7 @@ import { TickTickTask } from '../../lib/models/TickTickTask';
 import { TickTickClient } from '../../lib/TickTickClient';
 import { ArgumentAutocompleteResults } from 'homey/lib/FlowCard';
 import { TickTickModelHelpers } from '../../lib/TickTickModelHelpers';
+import { CryptoClient } from '../../lib/CryptoClient';
 
 class TickTickUserDriver extends Homey.Driver {
   /**
@@ -37,14 +38,15 @@ class TickTickUserDriver extends Homey.Driver {
 
     session.setHandler('list_devices', async () => {
       const tickTickProfile = await client.getProfile();
+      const cryptoClient = new CryptoClient(Homey.env.CRYPTO_KEY);
       return [
         {
           name: tickTickProfile.name !== null ? tickTickProfile.name : tickTickProfile.username,
           data: {
             id: tickTickProfile.username,
             inboxId: inboxId,
-            username: username,
-            password: password
+            username: cryptoClient.encrypt(username),
+            password: cryptoClient.encrypt(password)
           },
         },
       ];
