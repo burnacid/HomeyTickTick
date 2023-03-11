@@ -7,9 +7,7 @@
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
   },
   "dependencies": {
-    "axios": "^0.26.1",
-    "bson-objectid": "^2.0.3",
-    "crypto": "1.0.1"
+    "node-ticktick": "1.0.2"
   },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.9",

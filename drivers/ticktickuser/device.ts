@@ -1,6 +1,5 @@
 import Homey from 'homey';
-import { CryptoClient } from '../../lib/CryptoClient';
-import { TickTickClient } from '../../lib/TickTickClient';
+import { TickTickClient } from 'node-ticktick';
 
 class TickTickUserDevice extends Homey.Device {
 
@@ -10,10 +9,9 @@ class TickTickUserDevice extends Homey.Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    const data = this.getData();
-    const cryptoClient = new CryptoClient(Homey.env.CRYPTO_KEY);
-    if (data) {
-      this.client = new TickTickClient(cryptoClient.decrypt(data.username), cryptoClient.decrypt(data.password));
+    const settings = this.getSettings();
+    if (settings) {
+      this.client = new TickTickClient(settings.username, settings.password);
     }
     this.log('TickTickUserDevice has been initialized');
   }

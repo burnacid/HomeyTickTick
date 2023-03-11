@@ -1,13 +1,9 @@
 import Homey from 'homey';
 import PairSession from "homey/lib/PairSession";
-
-import ObjectID from 'bson-objectid';
-
-import { TickTickTask } from '../../lib/models/TickTickTask';
-import { TickTickClient } from '../../lib/TickTickClient';
 import { ArgumentAutocompleteResults } from 'homey/lib/FlowCard';
-import { TickTickModelHelpers } from '../../lib/TickTickModelHelpers';
-import { CryptoClient } from '../../lib/CryptoClient';
+import { TickTickClient } from 'node-ticktick';
+import { AddTask } from 'node-ticktick/lib/models/AddTask';
+import { TickTickModelHelpers } from 'node-ticktick/lib/TickTickModelHelpers';
 
 class TickTickUserDriver extends Homey.Driver {
   /**
@@ -38,16 +34,19 @@ class TickTickUserDriver extends Homey.Driver {
 
     session.setHandler('list_devices', async () => {
       const tickTickProfile = await client.getProfile();
-      const cryptoClient = new CryptoClient(Homey.env.CRYPTO_KEY);
       return [
         {
           name: tickTickProfile.name !== null ? tickTickProfile.name : tickTickProfile.username,
           data: {
             id: tickTickProfile.username,
-            inboxId: inboxId,
-            username: cryptoClient.encrypt(username),
-            password: cryptoClient.encrypt(password)
           },
+          store: {
+            inboxId: inboxId
+          },
+          settings: {
+            username: username,
+            password: password
+          }
         },
       ];
     });
@@ -56,29 +55,11 @@ class TickTickUserDriver extends Homey.Driver {
   registerCreateTaskAction() {
     const createSimpleTask = this.homey.flow.getActionCard('create-task');
     createSimpleTask.registerRunListener(async (args, state) => {
-      const ttUser = args.device.getData();
       const ttClient = <TickTickClient> args.device.client;
-      const task: TickTickTask = {
-        id: ObjectID(),
+      const task: AddTask = {
         title: args.title,
-        createdTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
-        modifiedTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
         timeZone: this.homey.clock.getTimezone(),
-        priority: 0,
-        status: 0,
-        startDate: null,
-        reminders: [],
         projectId: args.project.id,
-        progress: 0,
-        kind: null,
-        items: [],
-        isFloating: false,
-        exDate: [],
-        dueDate: null,
-        content: "",
-        assignee: null,
-        sortOrder: -205058918580224,
-        tags: []
       }
       await ttClient.createTask(task);
     });
@@ -89,14 +70,14 @@ class TickTickUserDriver extends Homey.Driver {
   }
 
   async getProjectArgumentAutocompleteResults(query: string, args: any): Promise<Homey.FlowCard.ArgumentAutocompleteResults> {
-    const ttUser = args.device.getData();
+    const inboxId = args.device.getStoreValue('inboxId');
     const ttClient = <TickTickClient> args.device.client;
     const projects = await ttClient.getProjects();
     const results: ArgumentAutocompleteResults = [
       {
         name: "Inbox",
-        id: ttUser.inboxId
-      }, 
+        id: inboxId
+      },
       ...projects.map(project => ({name: project.name, id: project.id}))
     ];
     return results;
@@ -105,29 +86,12 @@ class TickTickUserDriver extends Homey.Driver {
   registerCreateTaskWithStartDateTodayAction() {
     const createTaskWithDueDateToday = this.homey.flow.getActionCard('create-task-with-start-date-today');
     createTaskWithDueDateToday.registerRunListener(async (args, state) => {
-      const ttUser = args.device.getData();
       const ttClient = <TickTickClient> args.device.client;
-      const task: TickTickTask = {
-        id: ObjectID(),
+      const task: AddTask = {
         title: args.title,
-        createdTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
-        modifiedTime: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
         timeZone: this.homey.clock.getTimezone(),
-        priority: 0,
-        status: 0,
         startDate: TickTickModelHelpers.ConvertDateToTickTickDateTime(new Date()),
-        reminders: [],
         projectId: args.project.id,
-        progress: 0,
-        kind: null,
-        items: [],
-        isFloating: false,
-        exDate: [],
-        dueDate: null,
-        content: "",
-        assignee: null,
-        sortOrder: -205058918580224,
-        tags: []
       }
       await ttClient.createTask(task);
     });
