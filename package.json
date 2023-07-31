@@ -1,13 +1,13 @@
 {
   "name": "com.ticktick",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "main": "app.ts",
   "scripts": {
     "build": "tsc",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
   },
   "dependencies": {
-    "node-ticktick": "1.0.2"
+    "node-ticktick": "1.0.3"
   },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.9",
