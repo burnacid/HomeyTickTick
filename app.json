@@ -134,6 +134,55 @@
             }
           }
         ]
+      },
+      {
+        "id": "create-task-in-x-days",
+        "title": {
+          "en": "Create Task with start date x days from today"
+        },
+        "titleFormatted": {
+          "en": "Create Task with [[title]] with the start date [[days]] days from today in [[project]]"
+        },
+        "hint": {
+          "en": "Create Task with start date x days from today"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=ticktickuser"
+          },
+          {
+            "type": "text",
+            "name": "title",
+            "title": {
+              "en": "Title"
+            },
+            "placeholder": {
+              "en": "Some title for your task"
+            }
+          },
+          {
+            "type": "number",
+            "name": "days",
+            "title": {
+              "en": "Days"
+            },
+            "placeholder": {
+              "en": "How many days from today should this task start"
+            }
+          },
+          {
+            "type": "autocomplete",
+            "name": "project",
+            "title": {
+              "en": "List"
+            },
+            "placeholder": {
+              "en": "Inbox or other list"
+            }
+          }
+        ]
       }
     ]
   },
