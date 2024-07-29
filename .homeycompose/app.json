@@ -53,5 +53,12 @@
         "username": "StefanJSimon"
       }
     }
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Stefan Lenders"
+      }
+    ]
   }
 }
