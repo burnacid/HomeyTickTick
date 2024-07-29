@@ -14,6 +14,7 @@ class TickTickUserDriver extends Homey.Driver {
     this.registerCreateTaskAction();
     this.registerCreateTaskWithStartDateTodayAction();
     this.registerCreateTaskInXDays();
+    this.registerCreateTaskInXDaysWithPriority();
   }
 
   async onPair(session: PairSession) {
@@ -118,6 +119,27 @@ class TickTickUserDriver extends Homey.Driver {
     });
 
     createTaskWithDueDateInXDays.registerArgumentAutocompleteListener('project', async (query, args) => {
+      return await this.getProjectArgumentAutocompleteResults(query, args);
+    });
+  }
+
+  registerCreateTaskInXDaysWithPriority() {
+    const createTaskWithDueDateInXDaysWithPriority = this.homey.flow.getActionCard('create-task-in-x-days-with-priority');
+    createTaskWithDueDateInXDaysWithPriority.registerRunListener(async (args, state) => {
+      const ttClient = <TickTickClient> args.device.client;
+      var date = new Date();
+      date.setDate(date.getDate() + args.days)
+      const task: AddTask = {
+        title: args.title,
+        timeZone: this.homey.clock.getTimezone(),
+        startDate: TickTickModelHelpers.ConvertDateToTickTickDateTime(date),
+        projectId: args.project.id,
+        priority: args.priority
+      }
+      await ttClient.createTask(task);
+    });
+
+    createTaskWithDueDateInXDaysWithPriority.registerArgumentAutocompleteListener('project', async (query, args) => {
       return await this.getProjectArgumentAutocompleteResults(query, args);
     });
   }
